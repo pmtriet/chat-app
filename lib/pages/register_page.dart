@@ -1,3 +1,4 @@
+import 'package:chat_app/auth/auth_service.dart';
 import 'package:chat_app/components/my_button.dart';
 import 'package:chat_app/components/my_textfiled.dart';
 import 'package:flutter/material.dart';
@@ -5,15 +6,38 @@ import 'package:flutter/material.dart';
 class RegisterPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   //tap to go to login page
-  final void Function ()? onTap;
+  final void Function()? onTap;
 
   RegisterPage({super.key, required this.onTap});
 
-  void register() {
+  void register(BuildContext context) async {
+    final auth = AuthService();
+    if (_passwordController.text != _confirmPasswordController.text) {
+      showDialog(
+          context: context,
+          builder: (context) => const AlertDialog(
+                title: Text("Passwords do not match"),
+              ));
+      return;
+    }
 
+    try {
+      await auth.registerWithEmailAndPassword(
+        _emailController.text,
+        _passwordController.text,
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(e.toString()),
+        ),
+      );
+    }
   }
 
   @override
@@ -83,28 +107,27 @@ class RegisterPage extends StatelessWidget {
             //login button
             MyButton(
               text: "Register",
-              onTap: register,
+              onTap: () => register(context),
             ),
 
-            const SizedBox(height: 25,),
+            const SizedBox(
+              height: 25,
+            ),
 
             //register now
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Already have an account?",
-                  style: TextStyle(color: Theme.of(context).colorScheme.primary
-                  )
-                ),
+                Text("Already have an account?",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary)),
                 GestureDetector(
                   onTap: onTap,
                   child: Text(
-                    "Login Now!", 
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary
-                    ),
+                    "Login Now!",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary),
                   ),
                 ),
               ],
