@@ -21,10 +21,17 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Home"), actions: [
-        //log out button
-        IconButton(onPressed: logOut, icon: const Icon(Icons.logout)),
-      ]),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: AppBar(
+        title: const Text("Home"),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.grey,
+        elevation: 0,
+        actions: [
+          //log out button
+          IconButton(onPressed: logOut, icon: const Icon(Icons.logout)),
+        ],
+      ),
       drawer: const MyDrawer(),
       body: _buildUserList(),
     );
@@ -71,6 +78,7 @@ class HomePage extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => ChatPage(
                   receiveEmail: userData['email'],
+                  receiverID: userData['uid'],
                 ),
               ));
         },
